@@ -10,6 +10,18 @@ pygame.display.set_caption("Mini Mario HARD")
 clock = pygame.time.Clock()
 font = pygame.font.SysFont(None, 30)
 
+# ---------- PIXELFORGE LOGO (TEKST) ----------
+logo_font = pygame.font.SysFont("Arial", 20, bold=True)
+
+def draw_logo():
+    # bakgrunnsboks
+    pygame.draw.rect(screen, (20, 20, 20), (WIDTH - 190, 10, 180, 60), border_radius=8)
+    pygame.draw.rect(screen, (255, 140, 0), (WIDTH - 190, 10, 180, 60), 2, border_radius=8)
+
+    # tekst
+    text = logo_font.render("PixelForge", True, (255, 140, 0))
+    screen.blit(text, (WIDTH - 175, 25))
+
 # ---------- HIGHSCORE ----------
 def load_highscore():
     if os.path.exists("highscore.txt"):
@@ -36,7 +48,6 @@ levels = [
         "enemies": [pygame.Rect(500, 320, 30, 30)],
         "goal": pygame.Rect(700, 300, 40, 50)
     },
-
     {
         "platforms": [
             pygame.Rect(0, 350, 2000, 50),
@@ -54,47 +65,6 @@ levels = [
             pygame.Rect(700, 320, 30, 30)
         ],
         "goal": pygame.Rect(900, 300, 40, 50)
-    },
-
-    {
-        "platforms": [
-            pygame.Rect(0, 350, 2000, 50),
-            pygame.Rect(350, 280, 50, 15),
-            pygame.Rect(450, 240, 50, 15),
-            pygame.Rect(550, 200, 50, 15),
-            pygame.Rect(650, 160, 50, 15),
-        ],
-        "coins": [
-            pygame.Rect(360, 250, 15, 15),
-            pygame.Rect(460, 210, 15, 15),
-            pygame.Rect(560, 170, 15, 15),
-        ],
-        "enemies": [
-            pygame.Rect(500, 320, 30, 30),
-            pygame.Rect(700, 320, 30, 30)
-        ],
-        "goal": pygame.Rect(950, 300, 40, 50)
-    },
-
-    {
-        "platforms": [
-            pygame.Rect(0, 350, 2000, 50),
-            pygame.Rect(400, 300, 40, 15),
-            pygame.Rect(500, 260, 40, 15),
-            pygame.Rect(600, 220, 40, 15),
-            pygame.Rect(700, 180, 40, 15),
-        ],
-        "coins": [
-            pygame.Rect(410, 270, 15, 15),
-            pygame.Rect(510, 230, 15, 15),
-            pygame.Rect(610, 190, 15, 15),
-        ],
-        "enemies": [
-            pygame.Rect(550, 320, 30, 30),
-            pygame.Rect(650, 320, 30, 30),
-            pygame.Rect(750, 320, 30, 30)
-        ],
-        "goal": pygame.Rect(1100, 300, 40, 50)
     }
 ]
 
@@ -156,7 +126,6 @@ while True:
 
         on_ground = False
 
-        # kollisjon plattform
         for p in platforms:
             if player.colliderect(p):
                 if vel_y > 0:
@@ -164,26 +133,22 @@ while True:
                     vel_y = 0
                     on_ground = True
 
-        # fall død
         if player.y > HEIGHT:
             game_over = True
 
-        # coins
         for c in coins[:]:
             if player.colliderect(c):
                 coins.remove(c)
                 score += 1
 
-        # enemies
         for e in enemies:
             e.x += 2
-            if e.x < player.x - 200 or e.x > player.x + 200:
+            if e.x < 500 or e.x > 800:
                 e.x -= 2
 
             if player.colliderect(e):
                 game_over = True
 
-        # mål
         if player.colliderect(goal):
             current_level += 1
             if current_level >= len(levels):
@@ -215,6 +180,9 @@ while True:
     screen.blit(font.render(f"Score: {score}", True, (0,0,0)), (10,10))
     screen.blit(font.render(f"Highscore: {highscore}", True, (0,0,0)), (10,40))
     screen.blit(font.render(f"Level: {current_level+1}", True, (0,0,0)), (10,70))
+
+  
+    draw_logo()
 
     if game_over:
         screen.blit(font.render("GAME OVER - Press R", True, (0,0,0)), (250,200))
